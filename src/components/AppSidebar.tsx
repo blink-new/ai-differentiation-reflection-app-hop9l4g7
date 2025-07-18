@@ -37,8 +37,8 @@ export function AppSidebar() {
             <Lightbulb className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="font-semibold text-sm">AI Differentiation</h2>
-            <p className="text-xs text-muted-foreground">& Reflection</p>
+            <h2 className="font-semibold text-sm">365号室</h2>
+            <p className="text-xs text-muted-foreground">未来への階段</p>
           </div>
         </div>
       </SidebarHeader>
