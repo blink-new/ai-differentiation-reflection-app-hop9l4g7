@@ -26,7 +26,7 @@ function App() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">読み込み中...</p>
         </div>
       </div>
     )
@@ -36,15 +36,15 @@ function App() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-6">
-          <h1 className="text-3xl font-bold mb-4">AI Differentiation & Reflection</h1>
+          <h1 className="text-3xl font-bold mb-4">AI差別化・自己省察アプリ</h1>
           <p className="text-muted-foreground mb-6">
-            Create unique differentiation strategies and practice self-reflection with AI guidance.
+            AIガイダンスでユニークな差別化戦略を作成し、自己省察を実践しましょう。
           </p>
           <button
             onClick={() => blink.auth.login()}
             className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
           >
-            Sign In to Continue
+            サインインして続行
           </button>
         </div>
       </div>

@@ -27,13 +27,17 @@ export function ConceptLibrary() {
         const userData = await blink.auth.me()
         setUser(userData)
         
-        const userConcepts = await blink.db.concepts.list({
-          where: { userId: userData.id },
-          orderBy: { createdAt: 'desc' }
-        })
-        
-        setConcepts(userConcepts)
-        setFilteredConcepts(userConcepts)
+        try {
+          const userConcepts = await blink.db.concepts.list({
+            where: { userId: userData.id },
+            orderBy: { createdAt: 'desc' }
+          })
+          
+          setConcepts(userConcepts)
+          setFilteredConcepts(userConcepts)
+        } catch (dbError) {
+          console.log('Database not yet available for concepts')
+        }
         
       } catch (error) {
         console.error('Error loading concepts:', error)
@@ -63,14 +67,14 @@ export function ConceptLibrary() {
       const updatedConcepts = concepts.filter(c => c.id !== conceptId)
       setConcepts(updatedConcepts)
       toast({
-        title: "Concept deleted",
-        description: "The concept has been removed from your library."
+        title: "コンセプトを削除しました",
+        description: "コンセプトがライブラリから削除されました。"
       })
     } catch (error) {
       console.error('Error deleting concept:', error)
       toast({
-        title: "Delete failed",
-        description: "Failed to delete concept. Please try again.",
+        title: "削除に失敗しました",
+        description: "コンセプトの削除に失敗しました。もう一度お試しください。",
         variant: "destructive"
       })
     }
@@ -79,13 +83,13 @@ export function ConceptLibrary() {
   const copyCatchphrase = (catchphrase: string) => {
     navigator.clipboard.writeText(catchphrase)
     toast({
-      title: "Copied!",
-      description: "Catchphrase copied to clipboard."
+      title: "コピーしました！",
+      description: "キャッチフレーズをクリップボードにコピーしました。"
     })
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('ja-JP', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -96,14 +100,14 @@ export function ConceptLibrary() {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Concept Library</h1>
+          <h1 className="text-3xl font-bold">コンセプトライブラリ</h1>
           <p className="text-muted-foreground mt-1">
-            Your collection of differentiation strategies and ideas
+            差別化戦略とアイデアのコレクション
           </p>
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold">{concepts.length}</p>
-          <p className="text-sm text-muted-foreground">Concepts Saved</p>
+          <p className="text-sm text-muted-foreground">保存されたコンセプト</p>
         </div>
       </div>
 
@@ -113,7 +117,7 @@ export function ConceptLibrary() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder="Search concepts by title, idea, experiences, or catchphrase..."
+              placeholder="タイトル、アイデア、経験、キャッチフレーズでコンセプトを検索..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -128,18 +132,18 @@ export function ConceptLibrary() {
           <CardContent className="pt-6 text-center py-12">
             <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-medium mb-2">
-              {concepts.length === 0 ? 'No concepts yet' : 'No matching concepts'}
+              {concepts.length === 0 ? 'まだコンセプトがありません' : '一致するコンセプトがありません'}
             </h3>
             <p className="text-muted-foreground mb-4">
               {concepts.length === 0 
-                ? 'Start creating differentiation strategies in the Workshop to build your library.'
-                : 'Try adjusting your search terms to find what you\'re looking for.'
+                ? 'ワークショップで差別化戦略の作成を始めて、ライブラリを構築しましょう。'
+                : '検索条件を調整して、お探しのものを見つけてください。'
               }
             </p>
             {concepts.length === 0 && (
               <Button onClick={() => window.location.href = '/workshop'}>
                 <Lightbulb className="w-4 h-4 mr-2" />
-                Go to Workshop
+                ワークショップへ
               </Button>
             )}
           </CardContent>
@@ -171,9 +175,9 @@ export function ConceptLibrary() {
               <CardContent className="space-y-4">
                 {/* Experiences */}
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-2">EXPERIENCES</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">経験</p>
                   <div className="flex flex-wrap gap-1">
-                    {concept.experiences.split(', ').map((exp, index) => (
+                    {concept.experiences.split('、').map((exp, index) => (
                       <Badge key={index} variant="outline" className="text-xs">
                         {exp}
                       </Badge>
@@ -183,16 +187,16 @@ export function ConceptLibrary() {
 
                 {/* Idea */}
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-2">STRATEGY</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">戦略</p>
                   <p className="text-sm leading-relaxed">{concept.idea}</p>
                 </div>
 
                 {/* Catchphrase */}
                 {concept.catchphrase && (
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-2">CATCHPHRASE</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">キャッチフレーズ</p>
                     <div className="flex items-center justify-between bg-muted p-2 rounded">
-                      <p className="text-sm font-medium italic">"{concept.catchphrase}"</p>
+                      <p className="text-sm font-medium italic">「{concept.catchphrase}」</p>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -208,7 +212,7 @@ export function ConceptLibrary() {
                 {/* Notes */}
                 {concept.notes && (
                   <div>
-                    <p className="text-xs font-medium text-muted-foreground mb-2">NOTES</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-2">メモ</p>
                     <p className="text-sm text-muted-foreground">{concept.notes}</p>
                   </div>
                 )}
@@ -222,31 +226,31 @@ export function ConceptLibrary() {
       {concepts.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Library Statistics</CardTitle>
+            <CardTitle>ライブラリ統計</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div>
                 <p className="text-2xl font-bold">{concepts.length}</p>
-                <p className="text-sm text-muted-foreground">Total Concepts</p>
+                <p className="text-sm text-muted-foreground">総コンセプト数</p>
               </div>
               <div>
                 <p className="text-2xl font-bold">
-                  {new Set(concepts.flatMap(c => c.experiences.split(', '))).size}
+                  {new Set(concepts.flatMap(c => c.experiences.split('、'))).size}
                 </p>
-                <p className="text-sm text-muted-foreground">Unique Experiences</p>
+                <p className="text-sm text-muted-foreground">ユニークな経験</p>
               </div>
               <div>
                 <p className="text-2xl font-bold">
                   {concepts.filter(c => c.catchphrase).length}
                 </p>
-                <p className="text-sm text-muted-foreground">With Catchphrases</p>
+                <p className="text-sm text-muted-foreground">キャッチフレーズ付き</p>
               </div>
               <div>
                 <p className="text-2xl font-bold">
                   {concepts.filter(c => c.notes).length}
                 </p>
-                <p className="text-sm text-muted-foreground">With Notes</p>
+                <p className="text-sm text-muted-foreground">メモ付き</p>
               </div>
             </div>
           </CardContent>

@@ -16,16 +16,16 @@ import { blink } from '../blink/client'
 import { toast } from '../hooks/use-toast'
 
 const differentiationQuestions = [
-  "What unique combination of skills or experiences do you possess that others in your field typically don't have?",
-  "How could you apply a successful strategy from a completely different industry to your current work or goals?",
-  "What problem are you uniquely positioned to solve because of your specific background or perspective?",
-  "If you had to explain your value proposition in one sentence, what would make someone choose you over alternatives?",
-  "What unconventional approach could you take to a common challenge in your field?",
-  "How do your personal values or life experiences create a different lens through which you approach problems?",
-  "What would you do differently if you were starting fresh in your field today, knowing what you know now?",
-  "How could you combine two seemingly unrelated interests or skills to create something new?",
-  "What assumptions in your industry do you disagree with, and how could that disagreement become an advantage?",
-  "If you could only be known for one thing professionally, what would create the most meaningful impact?"
+  "あなたの分野で他の人が通常持っていない、ユニークなスキルや経験の組み合わせは何ですか？",
+  "全く異なる業界の成功戦略を、現在の仕事や目標にどのように応用できますか？",
+  "あなたの特定の背景や視点により、ユニークに解決できる問題は何ですか？",
+  "あなたの価値提案を一文で説明するとしたら、他の選択肢ではなくあなたを選ぶ理由は何でしょうか？",
+  "あなたの分野の一般的な課題に対して、どのような型破りなアプローチを取ることができますか？",
+  "あなたの個人的な価値観や人生経験は、問題へのアプローチにどのような異なるレンズを作り出しますか？",
+  "今知っていることを知った状態で、あなたの分野で新しく始めるとしたら、何を違ったやり方でしますか？",
+  "一見関係のない2つの興味やスキルを組み合わせて、何か新しいものを作ることができますか？",
+  "あなたの業界でどの前提に反対し、その反対意見をどのように優位性に変えることができますか？",
+  "プロフェッショナルとして1つのことだけで知られるとしたら、最も意味のあるインパクトを生み出すものは何でしょうか？"
 ]
 
 export function DailyReflection() {
@@ -50,27 +50,31 @@ export function DailyReflection() {
         )
         setTodaysQuestions(shuffled.slice(0, 5))
         
-        // Check if already completed today
-        const todayReflections = await blink.db.reflections.list({
-          where: { 
-            userId: userData.id,
-            date: today
+        // Check if already completed today and load recent reflections
+        try {
+          const todayReflections = await blink.db.reflections.list({
+            where: { 
+              userId: userData.id,
+              date: today
+            }
+          })
+          
+          if (todayReflections.length > 0) {
+            setCompletedToday(true)
+            const reflection = todayReflections[0]
+            setResponses(JSON.parse(reflection.responses))
           }
-        })
-        
-        if (todayReflections.length > 0) {
-          setCompletedToday(true)
-          const reflection = todayReflections[0]
-          setResponses(JSON.parse(reflection.responses))
+          
+          // Load recent reflections
+          const recent = await blink.db.reflections.list({
+            where: { userId: userData.id },
+            orderBy: { createdAt: 'desc' },
+            limit: 7
+          })
+          setRecentReflections(recent)
+        } catch (dbError) {
+          console.log('Database not yet available for reflections')
         }
-        
-        // Load recent reflections
-        const recent = await blink.db.reflections.list({
-          where: { userId: userData.id },
-          orderBy: { createdAt: 'desc' },
-          limit: 7
-        })
-        setRecentReflections(recent)
         
       } catch (error) {
         console.error('Error loading reflection data:', error)
@@ -90,8 +94,8 @@ export function DailyReflection() {
     const filledResponses = responses.filter(r => r.trim().length > 0)
     if (filledResponses.length === 0) {
       toast({
-        title: "No responses",
-        description: "Please answer at least one question before submitting.",
+        title: "回答がありません",
+        description: "送信する前に少なくとも1つの質問に答えてください。",
         variant: "destructive"
       })
       return
@@ -112,15 +116,15 @@ export function DailyReflection() {
 
       setCompletedToday(true)
       toast({
-        title: "Reflection saved!",
-        description: `You've completed ${filledResponses.length} questions today.`
+        title: "振り返りを保存しました！",
+        description: `今日は${filledResponses.length}問完了しました。`
       })
       
     } catch (error) {
       console.error('Error saving reflection:', error)
       toast({
-        title: "Save failed",
-        description: "Failed to save your reflection. Please try again.",
+        title: "保存に失敗しました",
+        description: "振り返りの保存に失敗しました。もう一度お試しください。",
         variant: "destructive"
       })
     } finally {
@@ -134,9 +138,9 @@ export function DailyReflection() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Daily Reflection</h1>
+        <h1 className="text-3xl font-bold mb-2">日々の振り返り</h1>
         <p className="text-muted-foreground">
-          Deepen your self-awareness with 5 daily differentiation questions
+          5つの日々の差別化質問で自己認識を深めましょう
         </p>
       </div>
 
@@ -146,17 +150,17 @@ export function DailyReflection() {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Calendar className="w-5 h-5" />
-              <span>Today's Progress</span>
+              <span>今日の進捗</span>
             </div>
             {completedToday && (
               <Badge variant="default" className="bg-green-500">
                 <CheckCircle className="w-3 h-3 mr-1" />
-                Completed
+                完了
               </Badge>
             )}
           </CardTitle>
           <CardDescription>
-            {new Date().toLocaleDateString('en-US', { 
+            {new Date().toLocaleDateString('ja-JP', { 
               weekday: 'long', 
               year: 'numeric', 
               month: 'long', 
@@ -167,7 +171,7 @@ export function DailyReflection() {
         <CardContent>
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Questions Answered</span>
+              <span>回答した質問</span>
               <span>{completedCount}/5</span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
@@ -184,13 +188,13 @@ export function DailyReflection() {
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
                   {index + 1}
                 </div>
-                <span>Question {index + 1}</span>
+                <span>質問 {index + 1}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-foreground leading-relaxed">{question}</p>
               <Textarea
-                placeholder="Take your time to reflect and write your thoughts..."
+                placeholder="時間をかけて振り返り、あなたの考えを書いてください..."
                 value={responses[index]}
                 onChange={(e) => updateResponse(index, e.target.value)}
                 rows={4}
@@ -200,7 +204,7 @@ export function DailyReflection() {
               {responses[index].trim().length > 0 && (
                 <div className="flex items-center space-x-2 text-sm text-green-600">
                   <CheckCircle className="w-4 h-4" />
-                  <span>Response saved</span>
+                  <span>回答を保存しました</span>
                 </div>
               )}
             </CardContent>
@@ -221,12 +225,12 @@ export function DailyReflection() {
               {isSubmitting ? (
                 <>
                   <Clock className="w-4 h-4 mr-2 animate-spin" />
-                  Saving Reflection...
+                  振り返りを保存中...
                 </>
               ) : (
                 <>
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  Save Today's Reflection ({completedCount}/5 questions)
+                  今日の振り返りを保存 ({completedCount}/5 問)
                 </>
               )}
             </Button>
@@ -240,10 +244,10 @@ export function DailyReflection() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <TrendingUp className="w-5 h-5" />
-              <span>Recent Reflections</span>
+              <span>最近の振り返り</span>
             </CardTitle>
             <CardDescription>
-              Your reflection activity over the past week
+              過去1週間の振り返り活動
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -253,11 +257,11 @@ export function DailyReflection() {
                   <div className="flex items-center space-x-3">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <span className="text-sm">
-                      {new Date(reflection.date).toLocaleDateString()}
+                      {new Date(reflection.date).toLocaleDateString('ja-JP')}
                     </span>
                   </div>
                   <Badge variant="outline">
-                    {reflection.completedQuestions}/5 questions
+                    {reflection.completedQuestions}/5 問
                   </Badge>
                 </div>
               ))}

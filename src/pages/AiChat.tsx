@@ -16,24 +16,24 @@ import { toast } from '../hooks/use-toast'
 
 const rolePlayScenarios = [
   {
-    title: "Career Coach",
-    description: "Get guidance on career development and differentiation strategies",
-    prompt: "You are an experienced career coach specializing in helping professionals identify and leverage their unique value propositions. Help me explore my differentiation opportunities and career growth strategies."
+    title: "キャリアコーチ",
+    description: "キャリア開発と差別化戦略についてのガイダンスを受ける",
+    prompt: "あなたは、プロフェッショナルがユニークな価値提案を特定し活用することを専門とする経験豊富なキャリアコーチです。私の差別化の機会とキャリア成長戦略を探求するのを手伝ってください。日本語で回答してください。"
   },
   {
-    title: "Business Mentor",
-    description: "Discuss business ideas and entrepreneurial differentiation",
-    prompt: "You are a successful business mentor with experience across multiple industries. Help me think through business opportunities and how to differentiate in competitive markets."
+    title: "ビジネスメンター",
+    description: "ビジネスアイデアと起業家的差別化について議論する",
+    prompt: "あなたは複数の業界で経験を持つ成功したビジネスメンターです。ビジネス機会と競争市場での差別化方法について考えるのを手伝ってください。日本語で回答してください。"
   },
   {
-    title: "Innovation Consultant",
-    description: "Explore creative approaches and cross-industry insights",
-    prompt: "You are an innovation consultant who specializes in cross-industry pattern recognition and creative problem-solving. Help me discover unconventional approaches and innovative differentiation strategies."
+    title: "イノベーションコンサルタント",
+    description: "創造的なアプローチと異業種の洞察を探求する",
+    prompt: "あなたは異業種パターン認識と創造的問題解決を専門とするイノベーションコンサルタントです。型破りなアプローチと革新的な差別化戦略を発見するのを手伝ってください。日本語で回答してください。"
   },
   {
-    title: "Personal Brand Expert",
-    description: "Develop your personal brand and unique positioning",
-    prompt: "You are a personal branding expert who helps professionals articulate their unique value and build compelling personal brands. Help me clarify and strengthen my personal brand positioning."
+    title: "パーソナルブランド専門家",
+    description: "パーソナルブランドとユニークなポジショニングを開発する",
+    prompt: "あなたはプロフェッショナルがユニークな価値を明確にし、魅力的なパーソナルブランドを構築することを支援するパーソナルブランディング専門家です。私のパーソナルブランドポジショニングを明確化し強化するのを手伝ってください。日本語で回答してください。"
   }
 ]
 
@@ -74,7 +74,7 @@ export function AiChat() {
       {
         id: Date.now().toString(),
         role: 'assistant',
-        content: `Hello! I'm your ${scenario.title.toLowerCase()}. ${scenario.description} What would you like to explore today?`,
+        content: `こんにちは！私はあなたの${scenario.title.toLowerCase()}です。${scenario.description}今日は何を探求したいですか？`,
         timestamp: new Date()
       }
     ])
@@ -96,7 +96,7 @@ export function AiChat() {
 
     try {
       const scenario = rolePlayScenarios.find(s => s.title === selectedScenario)
-      const systemPrompt = scenario ? scenario.prompt : "You are a helpful AI assistant focused on differentiation and self-reflection."
+      const systemPrompt = scenario ? scenario.prompt : "あなたは差別化と自己省察に焦点を当てた親切なAIアシスタントです。日本語で回答してください。"
       
       const conversationHistory = [...messages, userMessage].map(msg => ({
         role: msg.role,
@@ -155,8 +155,8 @@ export function AiChat() {
     } catch (error) {
       console.error('Error sending message:', error)
       toast({
-        title: "Message failed",
-        description: "Failed to send message. Please try again.",
+        title: "メッセージの送信に失敗しました",
+        description: "メッセージの送信に失敗しました。もう一度お試しください。",
         variant: "destructive"
       })
     } finally {
@@ -170,7 +170,7 @@ export function AiChat() {
   }
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', { 
+    return date.toLocaleTimeString('ja-JP', { 
       hour: '2-digit', 
       minute: '2-digit' 
     })
@@ -179,9 +179,9 @@ export function AiChat() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">AI Chat & Role-Play</h1>
+        <h1 className="text-3xl font-bold mb-2">AIチャット・ロールプレイ</h1>
         <p className="text-muted-foreground">
-          Practice conversations and get personalized guidance from AI mentors
+          AIメンターとの会話練習とパーソナライズされたガイダンス
         </p>
       </div>
 
@@ -191,10 +191,10 @@ export function AiChat() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Sparkles className="w-5 h-5" />
-              <span>Choose Your AI Mentor</span>
+              <span>AIメンターを選択</span>
             </CardTitle>
             <CardDescription>
-              Select a role-play scenario to start your conversation
+              会話を始めるロールプレイシナリオを選択してください
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -227,7 +227,7 @@ export function AiChat() {
               </div>
               <Button variant="outline" size="sm" onClick={clearChat}>
                 <RefreshCw className="w-4 h-4 mr-2" />
-                New Chat
+                新しいチャット
               </Button>
             </div>
           </CardHeader>
@@ -290,7 +290,7 @@ export function AiChat() {
           <div className="p-4 border-t">
             <div className="flex space-x-2">
               <Textarea
-                placeholder="Type your message..."
+                placeholder="メッセージを入力..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={(e) => {
@@ -313,7 +313,7 @@ export function AiChat() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Press Enter to send, Shift+Enter for new line
+              Enterで送信、Shift+Enterで改行
             </p>
           </div>
         </Card>

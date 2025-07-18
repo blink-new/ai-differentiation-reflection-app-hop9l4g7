@@ -17,23 +17,23 @@ import { blink } from '../blink/client'
 import { toast } from '../hooks/use-toast'
 
 const experienceCategories = [
-  'Technology', 'Healthcare', 'Education', 'Finance', 'Retail', 'Manufacturing',
-  'Hospitality', 'Transportation', 'Entertainment', 'Sports', 'Art', 'Music',
-  'Consulting', 'Marketing', 'Sales', 'Operations', 'Leadership', 'Startup',
-  'Non-profit', 'Government', 'Research', 'Design', 'Writing', 'Photography'
+  'テクノロジー', 'ヘルスケア', '教育', '金融', '小売', '製造業',
+  'ホスピタリティ', '交通', 'エンターテイメント', 'スポーツ', 'アート', '音楽',
+  'コンサルティング', 'マーケティング', '営業', 'オペレーション', 'リーダーシップ', 'スタートアップ',
+  'NPO', '政府', '研究', 'デザイン', 'ライティング', '写真'
 ]
 
 const crossIndustryIdeas = [
-  'Subscription model from Netflix → Apply to fitness coaching',
-  'Gamification from video games → Apply to learning platforms',
-  'Just-in-time delivery from Toyota → Apply to content creation',
-  'Freemium model from software → Apply to consulting services',
-  'Community building from Discord → Apply to professional networking',
-  'Personalization from Spotify → Apply to meal planning',
-  'Marketplace model from Airbnb → Apply to skill sharing',
-  'Automation from manufacturing → Apply to customer service',
-  'Storytelling from Disney → Apply to brand marketing',
-  'Minimalism from Apple → Apply to productivity tools'
+  'Netflixのサブスクリプションモデル → フィットネスコーチングに応用',
+  'ビデオゲームのゲーミフィケーション → 学習プラットフォームに応用',
+  'トヨタのジャストインタイム配送 → コンテンツ制作に応用',
+  'ソフトウェアのフリーミアムモデル → コンサルティングサービスに応用',
+  'Discordのコミュニティ構築 → プロフェッショナルネットワーキングに応用',
+  'Spotifyのパーソナライゼーション → 食事プランニングに応用',
+  'Airbnbのマーケットプレイスモデル → スキルシェアリングに応用',
+  '製造業の自動化 → カスタマーサービスに応用',
+  'ディズニーのストーリーテリング → ブランドマーケティングに応用',
+  'Appleのミニマリズム → 生産性ツールに応用'
 ]
 
 export function DifferentiationWorkshop() {
@@ -72,8 +72,8 @@ export function DifferentiationWorkshop() {
   const generateIdea = async () => {
     if (selectedExperiences.length === 0) {
       toast({
-        title: "Select experiences first",
-        description: "Please select at least one experience or attribute to generate ideas.",
+        title: "まず経験を選択してください",
+        description: "アイデアを生成するには、少なくとも1つの経験や属性を選択してください。",
         variant: "destructive"
       })
       return
@@ -84,9 +84,9 @@ export function DifferentiationWorkshop() {
       const randomCrossIndustryIdea = crossIndustryIdeas[Math.floor(Math.random() * crossIndustryIdeas.length)]
       
       const { text } = await blink.ai.generateText({
-        prompt: `Create a unique differentiation strategy by combining these user experiences/attributes: ${selectedExperiences.join(', ')} with this cross-industry concept: ${randomCrossIndustryIdea}. 
+        prompt: `以下のユーザーの経験・属性：${selectedExperiences.join('、')} と、この異業種コンセプト：${randomCrossIndustryIdea} を組み合わせて、ユニークな差別化戦略を作成してください。
 
-        Provide a creative, actionable differentiation idea that leverages the user's background in a unique way. Focus on practical application and competitive advantage. Keep it concise but inspiring.`,
+        ユーザーの背景をユニークな方法で活用する、創造的で実行可能な差別化アイデアを提供してください。実用的な応用と競争優位性に焦点を当ててください。簡潔でありながら刺激的な内容にしてください。日本語で回答してください。`,
         maxTokens: 200
       })
 
@@ -94,17 +94,17 @@ export function DifferentiationWorkshop() {
       
       // Generate catchphrase
       const { text: catchphrase } = await blink.ai.generateText({
-        prompt: `Based on this differentiation strategy: "${text}", create a memorable, punchy catchphrase or tagline that captures the essence of this unique approach. Make it catchy, professional, and memorable. Provide just the catchphrase, nothing else.`,
+        prompt: `この差別化戦略：「${text}」に基づいて、このユニークなアプローチの本質を捉える記憶に残る、パンチの効いたキャッチフレーズやタグラインを作成してください。キャッチーで、プロフェッショナルで、記憶に残るものにしてください。キャッチフレーズのみを提供し、他は何も含めないでください。日本語で回答してください。`,
         maxTokens: 50
       })
 
-      setGeneratedCatchphrase(catchphrase.replace(/['"]/g, ''))
+      setGeneratedCatchphrase(catchphrase.replace(/['\"]/g, ''))
       
     } catch (error) {
       console.error('Error generating idea:', error)
       toast({
-        title: "Generation failed",
-        description: "Failed to generate idea. Please try again.",
+        title: "生成に失敗しました",
+        description: "アイデアの生成に失敗しました。もう一度お試しください。",
         variant: "destructive"
       })
     } finally {
@@ -115,8 +115,8 @@ export function DifferentiationWorkshop() {
   const saveConcept = async () => {
     if (!conceptTitle.trim() || !generatedIdea) {
       toast({
-        title: "Missing information",
-        description: "Please provide a title and generate an idea first.",
+        title: "情報が不足しています",
+        description: "タイトルを入力し、まずアイデアを生成してください。",
         variant: "destructive"
       })
       return
@@ -128,14 +128,14 @@ export function DifferentiationWorkshop() {
         title: conceptTitle,
         idea: generatedIdea,
         catchphrase: generatedCatchphrase,
-        experiences: selectedExperiences.join(', '),
+        experiences: selectedExperiences.join('、'),
         notes: conceptNotes,
         createdAt: new Date().toISOString()
       })
 
       toast({
-        title: "Concept saved!",
-        description: "Your differentiation concept has been saved to your library."
+        title: "コンセプトを保存しました！",
+        description: "差別化コンセプトがライブラリに保存されました。"
       })
 
       // Reset form
@@ -148,8 +148,8 @@ export function DifferentiationWorkshop() {
     } catch (error) {
       console.error('Error saving concept:', error)
       toast({
-        title: "Save failed",
-        description: "Failed to save concept. Please try again.",
+        title: "保存に失敗しました",
+        description: "コンセプトの保存に失敗しました。もう一度お試しください。",
         variant: "destructive"
       })
     }
@@ -158,9 +158,9 @@ export function DifferentiationWorkshop() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Differentiation Workshop</h1>
+        <h1 className="text-3xl font-bold mb-2">差別化ワークショップ</h1>
         <p className="text-muted-foreground">
-          Combine your unique experiences with cross-industry insights to create powerful differentiation strategies
+          あなたのユニークな経験と異業種の洞察を組み合わせて、強力な差別化戦略を作成しましょう
         </p>
       </div>
 
@@ -169,10 +169,10 @@ export function DifferentiationWorkshop() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Lightbulb className="w-5 h-5" />
-            <span>Your Experiences & Attributes</span>
+            <span>あなたの経験・属性</span>
           </CardTitle>
           <CardDescription>
-            Select areas where you have experience, skills, or unique attributes
+            経験、スキル、またはユニークな属性がある分野を選択してください
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -198,7 +198,7 @@ export function DifferentiationWorkshop() {
 
           <div className="flex space-x-2">
             <Input
-              placeholder="Add custom experience..."
+              placeholder="カスタム経験を追加..."
               value={customExperience}
               onChange={(e) => setCustomExperience(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addCustomExperience()}
@@ -210,7 +210,7 @@ export function DifferentiationWorkshop() {
 
           {selectedExperiences.length > 0 && (
             <div className="space-y-2">
-              <Label>Selected Experiences:</Label>
+              <Label>選択された経験：</Label>
               <div className="flex flex-wrap gap-2">
                 {selectedExperiences.map((experience) => (
                   <Badge key={experience} variant="secondary" className="flex items-center space-x-1">
@@ -232,10 +232,10 @@ export function DifferentiationWorkshop() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Sparkles className="w-5 h-5" />
-            <span>AI-Generated Differentiation Strategy</span>
+            <span>AI生成差別化戦略</span>
           </CardTitle>
           <CardDescription>
-            Generate unique ideas by combining your experiences with cross-industry concepts
+            あなたの経験と異業種コンセプトを組み合わせてユニークなアイデアを生成
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -247,12 +247,12 @@ export function DifferentiationWorkshop() {
             {isGenerating ? (
               <>
                 <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                Generating...
+                生成中...
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4 mr-2" />
-                Generate Differentiation Idea
+                差別化アイデアを生成
               </>
             )}
           </Button>
@@ -260,14 +260,14 @@ export function DifferentiationWorkshop() {
           {generatedIdea && (
             <div className="space-y-4 p-4 bg-muted rounded-lg">
               <div>
-                <Label className="text-sm font-medium">Differentiation Strategy:</Label>
+                <Label className="text-sm font-medium">差別化戦略：</Label>
                 <p className="mt-1 text-sm leading-relaxed">{generatedIdea}</p>
               </div>
               
               {generatedCatchphrase && (
                 <div>
-                  <Label className="text-sm font-medium">Suggested Catchphrase:</Label>
-                  <p className="mt-1 text-sm font-medium italic">"{generatedCatchphrase}"</p>
+                  <Label className="text-sm font-medium">提案キャッチフレーズ：</Label>
+                  <p className="mt-1 text-sm font-medium italic">「{generatedCatchphrase}」</p>
                 </div>
               )}
             </div>
@@ -281,28 +281,28 @@ export function DifferentiationWorkshop() {
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <Save className="w-5 h-5" />
-              <span>Save Your Concept</span>
+              <span>コンセプトを保存</span>
             </CardTitle>
             <CardDescription>
-              Give your differentiation concept a title and add notes for future reference
+              差別化コンセプトにタイトルを付けて、将来の参考のためにメモを追加してください
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="title">Concept Title</Label>
+              <Label htmlFor="title">コンセプトタイトル</Label>
               <Input
                 id="title"
-                placeholder="e.g., Tech-Healthcare Hybrid Approach"
+                placeholder="例：テック・ヘルスケア融合アプローチ"
                 value={conceptTitle}
                 onChange={(e) => setConceptTitle(e.target.value)}
               />
             </div>
 
             <div>
-              <Label htmlFor="notes">Additional Notes (Optional)</Label>
+              <Label htmlFor="notes">追加メモ（任意）</Label>
               <Textarea
                 id="notes"
-                placeholder="Add any additional thoughts, implementation ideas, or refinements..."
+                placeholder="追加の考え、実装アイデア、改良点などを追加..."
                 value={conceptNotes}
                 onChange={(e) => setConceptNotes(e.target.value)}
                 rows={3}
@@ -311,7 +311,7 @@ export function DifferentiationWorkshop() {
 
             <Button onClick={saveConcept} className="w-full">
               <Save className="w-4 h-4 mr-2" />
-              Save to Concept Library
+              コンセプトライブラリに保存
             </Button>
           </CardContent>
         </Card>

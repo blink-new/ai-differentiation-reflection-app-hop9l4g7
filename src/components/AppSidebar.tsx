@@ -19,11 +19,11 @@ import {
 } from './ui/sidebar'
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Differentiation Workshop', href: '/workshop', icon: Lightbulb },
-  { name: 'Daily Reflection', href: '/reflection', icon: MessageSquare },
-  { name: 'Concept Library', href: '/library', icon: BookOpen },
-  { name: 'AI Chat', href: '/chat', icon: Bot },
+  { name: 'ダッシュボード', href: '/dashboard', icon: LayoutDashboard },
+  { name: '差別化ワークショップ', href: '/workshop', icon: Lightbulb },
+  { name: '日々の振り返り', href: '/reflection', icon: MessageSquare },
+  { name: 'コンセプトライブラリ', href: '/library', icon: BookOpen },
+  { name: 'AI チャット', href: '/chat', icon: Bot },
 ]
 
 export function AppSidebar() {
@@ -63,7 +63,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton onClick={() => blink.auth.logout()}>
               <LogOut className="w-5 h-5" />
-              <span>Sign Out</span>
+              <span>サインアウト</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

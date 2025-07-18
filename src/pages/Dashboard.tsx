@@ -28,21 +28,26 @@ export function Dashboard() {
         setUser(userData)
         
         // Load user stats from database
-        const concepts = await blink.db.concepts.list({
-          where: { userId: userData.id },
-          limit: 1000
-        })
-        
-        const reflections = await blink.db.reflections.list({
-          where: { userId: userData.id },
-          limit: 1000
-        })
+        try {
+          const concepts = await blink.db.concepts.list({
+            where: { userId: userData.id },
+            limit: 1000
+          })
+          
+          const reflections = await blink.db.reflections.list({
+            where: { userId: userData.id },
+            limit: 1000
+          })
 
-        setStats({
-          conceptsCreated: concepts.length,
-          reflectionsCompleted: reflections.length,
-          streakDays: calculateStreak(reflections)
-        })
+          setStats({
+            conceptsCreated: concepts.length,
+            reflectionsCompleted: reflections.length,
+            streakDays: calculateStreak(reflections)
+          })
+        } catch (dbError) {
+          console.log('Database not yet available, using default stats')
+          // Use default stats when database is not available
+        }
       } catch (error) {
         console.error('Error loading user data:', error)
       }
@@ -78,22 +83,22 @@ export function Dashboard() {
 
   const quickActions = [
     {
-      title: 'Create Differentiation Strategy',
-      description: 'Combine your experiences with cross-industry ideas',
+      title: '差別化戦略を作成',
+      description: 'あなたの経験と異業種のアイデアを組み合わせる',
       icon: Lightbulb,
       href: '/workshop',
       color: 'bg-blue-500'
     },
     {
-      title: 'Daily Reflection',
-      description: 'Answer today\'s differentiation questions',
+      title: '日々の振り返り',
+      description: '今日の差別化に関する質問に答える',
       icon: MessageSquare,
       href: '/reflection',
       color: 'bg-green-500'
     },
     {
-      title: 'Browse Concepts',
-      description: 'Explore your saved differentiation concepts',
+      title: 'コンセプトを閲覧',
+      description: '保存した差別化コンセプトを探索する',
       icon: BookOpen,
       href: '/library',
       color: 'bg-purple-500'
@@ -104,9 +109,9 @@ export function Dashboard() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Welcome back{user?.displayName ? `, ${user.displayName}` : ''}!</h1>
+          <h1 className="text-3xl font-bold">おかえりなさい{user?.displayName ? `、${user.displayName}さん` : ''}！</h1>
           <p className="text-muted-foreground mt-1">
-            Ready to discover new ways to differentiate yourself?
+            新しい差別化の方法を発見する準備はできていますか？
           </p>
         </div>
       </div>
@@ -115,39 +120,39 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Concepts Created</CardTitle>
+            <CardTitle className="text-sm font-medium">作成したコンセプト</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.conceptsCreated}</div>
             <p className="text-xs text-muted-foreground">
-              Differentiation strategies saved
+              保存された差別化戦略
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Reflections</CardTitle>
+            <CardTitle className="text-sm font-medium">振り返り</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.reflectionsCompleted}</div>
             <p className="text-xs text-muted-foreground">
-              Questions answered
+              回答した質問数
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Current Streak</CardTitle>
+            <CardTitle className="text-sm font-medium">現在の連続記録</CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.streakDays}</div>
             <p className="text-xs text-muted-foreground">
-              Days of reflection
+              振り返りの連続日数
             </p>
           </CardContent>
         </Card>
@@ -155,7 +160,7 @@ export function Dashboard() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+        <h2 className="text-xl font-semibold mb-4">クイックアクション</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {quickActions.map((action) => (
             <Card key={action.title} className="hover:shadow-lg transition-shadow cursor-pointer">
@@ -178,16 +183,16 @@ export function Dashboard() {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <TrendingUp className="w-5 h-5" />
-            <span>Your Progress</span>
+            <span>あなたの進捗</span>
           </CardTitle>
           <CardDescription>
-            Keep building your differentiation skills
+            差別化スキルを継続的に向上させましょう
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span>Concepts Created</span>
+              <span>作成したコンセプト</span>
               <span>{stats.conceptsCreated}/10</span>
             </div>
             <Progress value={(stats.conceptsCreated / 10) * 100} className="h-2" />
@@ -195,7 +200,7 @@ export function Dashboard() {
           
           <div>
             <div className="flex justify-between text-sm mb-2">
-              <span>Weekly Reflection Goal</span>
+              <span>週間振り返り目標</span>
               <span>{Math.min(stats.streakDays, 7)}/7</span>
             </div>
             <Progress value={(Math.min(stats.streakDays, 7) / 7) * 100} className="h-2" />
