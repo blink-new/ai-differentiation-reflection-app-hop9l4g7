@@ -47,6 +47,11 @@ export function Dashboard() {
         } catch (dbError) {
           console.log('Database not yet available, using default stats')
           // Use default stats when database is not available
+          setStats({
+            conceptsCreated: 0,
+            reflectionsCompleted: 0,
+            streakDays: 0
+          })
         }
       } catch (error) {
         console.error('Error loading user data:', error)

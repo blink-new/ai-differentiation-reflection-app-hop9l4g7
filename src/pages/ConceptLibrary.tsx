@@ -37,10 +37,16 @@ export function ConceptLibrary() {
           setFilteredConcepts(userConcepts)
         } catch (dbError) {
           console.log('Database not yet available for concepts')
+          // Use empty array as fallback
+          setConcepts([])
+          setFilteredConcepts([])
         }
         
       } catch (error) {
         console.error('Error loading concepts:', error)
+        // Use empty array as fallback
+        setConcepts([])
+        setFilteredConcepts([])
       }
     }
     
@@ -73,8 +79,8 @@ export function ConceptLibrary() {
     } catch (error) {
       console.error('Error deleting concept:', error)
       toast({
-        title: "削除に失敗しました",
-        description: "コンセプトの削除に失敗しました。もう一度お試しください。",
+        title: "データベースが利用できません",
+        description: "現在データベースが利用できません。後でもう一度お試しください。",
         variant: "destructive"
       })
     }

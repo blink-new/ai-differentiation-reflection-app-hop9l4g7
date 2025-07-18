@@ -148,8 +148,8 @@ export function DifferentiationWorkshop() {
     } catch (error) {
       console.error('Error saving concept:', error)
       toast({
-        title: "保存に失敗しました",
-        description: "コンセプトの保存に失敗しました。もう一度お試しください。",
+        title: "データベースが利用できません",
+        description: "現在データベースが利用できません。後でもう一度お試しください。",
         variant: "destructive"
       })
     }

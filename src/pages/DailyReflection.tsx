@@ -74,6 +74,8 @@ export function DailyReflection() {
           setRecentReflections(recent)
         } catch (dbError) {
           console.log('Database not yet available for reflections')
+          // Use empty array as fallback
+          setRecentReflections([])
         }
         
       } catch (error) {
@@ -123,8 +125,8 @@ export function DailyReflection() {
     } catch (error) {
       console.error('Error saving reflection:', error)
       toast({
-        title: "保存に失敗しました",
-        description: "振り返りの保存に失敗しました。もう一度お試しください。",
+        title: "データベースが利用できません",
+        description: "現在データベースが利用できません。後でもう一度お試しください。",
         variant: "destructive"
       })
     } finally {
